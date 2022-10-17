@@ -1,18 +1,14 @@
 const express = require('express')
 const app = express()
 
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'mdb-test.c6vunyturrl6.us-west-1.rds.amazonaws.com',
-  user     : 'bsale_test',
-  password : 'bsale_test',
-  database : 'bsale_test'
+const mysql = require('mysql');
+const pool  = mysql.createPool({
+  connectionLimit : 10,
+  host            : 'mdb-test.c6vunyturrl6.us-west-1.rds.amazonaws.com',
+  user            : 'bsale_test',
+  password        : 'bsale_test',
+  database        : 'bsale_test'
 });
-
-const connect = () => {
-    connection.connect( err => {
-    err ? err : console.log('Database server running');
-})}
 
 const PORT = process.env.PORT || 3000;
 
@@ -23,41 +19,70 @@ app.get('/', (req,res)=>{
 })
 
 app.get('/products', (req,res)=>{
-    const sql = 'SELECT * FROM product';
-    connect();
-    connection.query(sql, (err, results) => {
-        if (err) return err;
-        if (results.length > 0 ) {
-            res.send(results);
+
+    pool.getConnection((err,conn)=>{
+        if (err) {
+            return err;
         } else {
-            res.send('No results found.')
+            conn.query('SELECT * FROM product',(err2,results,fields)=>{
+                if (!err2) {
+                    res.json(results);
+                }
+                conn.release();             
+            })
         }
-    }) 
+
+    })
 })
 
 app.get('/products/:id', (req,res)=>{
-    const {id} = req.params;        
-    const sql = `SELECT * FROM product WHERE category = ${ id }`;
-    connect();
-    connection.query(sql, (err, result) => {        
-        if (err) return err;
-        if (result.length > 0 ) {
-            res.json(result);
+    const {id} = req.params;            
+    pool.getConnection((err,conn)=>{
+        if (err) {
+            return err;
         } else {
-            res.send('No results found.')            
+            conn.query(`SELECT * FROM product WHERE category = ${ id }`,(err2,results,fields)=>{
+                if (!err2) {
+                    res.json(results);
+                }
+                conn.release();
+            })
         }
+
     })
 })
 
 app.get('/category', (req,res)=>{
-    const sql = 'SELECT * FROM category';
-    connect();
-    connection.query(sql, (err, results) => {
-        if (err) return err;
-        if (results.length > 0 ) {
-            res.json(results);
+    pool.getConnection((err,conn)=>{
+        if (err) {
+            return err;
         } else {
-            res.send('No results found.')
+            conn.query('SELECT * FROM category',(err2,results,fields)=>{
+                if (!err2) {
+                    res.json(results);
+                }
+                conn.release();
+            })
         }
-    }) 
+
+    })
+    
+})
+
+app.get('/products/:product', (req,res)=>{
+    const {product} = req.params;   
+             
+    pool.getConnection((err,conn)=>{
+        if (err) {
+            return err;
+        } else {
+            conn.query(`SELECT * FROM product WHERE name= ${product}`,(err2,result,fields)=>{
+                if (!err2) {
+                    res.json(result);
+                }
+                conn.release();             
+            })
+        }
+
+    })
 })
