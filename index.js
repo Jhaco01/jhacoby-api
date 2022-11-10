@@ -1,5 +1,10 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
+
+app.use(cors({
+    origin: "http://127.0.0.1:5500",
+}))
 
 const mysql = require('mysql');
 const pool  = mysql.createPool({
@@ -36,7 +41,10 @@ app.get('/products', (req,res)=>{
 })
 
 app.get('/products/:id', (req,res)=>{
-    const {id} = req.params;            
+    const {id} = req.params;  
+    
+    console.log(id);
+    
     pool.getConnection((err,conn)=>{
         if (err) {
             return err;
@@ -69,16 +77,17 @@ app.get('/category', (req,res)=>{
     
 })
 
-app.get('/products/:product', (req,res)=>{
-    const {product} = req.params;   
-             
+app.get('/products/product/:search', (req,res)=>{
+    const {search} = req.params;               
+
     pool.getConnection((err,conn)=>{
         if (err) {
             return err;
         } else {
-            conn.query(`SELECT * FROM product WHERE name= ${product}`,(err2,result,fields)=>{
+            conn.query('SELECT * FROM product',(err2,results,fields)=>{
                 if (!err2) {
-                    res.json(result);
+                    const newResults = results.filter( ({name}) => name.toLowerCase().includes(search.toLowerCase()) );
+                    res.json(newResults);
                 }
                 conn.release();             
             })
