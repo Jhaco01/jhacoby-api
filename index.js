@@ -43,8 +43,6 @@ app.get('/products', (req,res)=>{
 app.get('/products/:id', (req,res)=>{
     const {id} = req.params;  
     
-    console.log(id);
-    
     pool.getConnection((err,conn)=>{
         if (err) {
             return err;
