@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=>console.log(`Server running in port ${PORT}`));
 
 app.get('/', (req,res)=>{
-    console.log('Welcome to jhacoby-api');
+    console.log('Welcome to jhacoby-bsale-api');
 })
 
 app.get('/products', (req,res)=>{

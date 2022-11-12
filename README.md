@@ -1,6 +1,6 @@
 #JHACOBY API
 
-Al realizar una petición HTTP, el servicio retornara el mensaje: ***welcome to jhacoby-api***
+Al realizar una petición HTTP, el servicio retornara el mensaje: ***welcome to jhacoby-bsale-api***
 
 ##GET lista de productos
 
