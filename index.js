@@ -39,7 +39,7 @@ app.get('/products', (req,res)=>{
 
     })
 })
-
+    
 app.get('/products/:id', (req,res)=>{
     const {id} = req.params;  
     
