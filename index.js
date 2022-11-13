@@ -3,7 +3,7 @@ const app = express()
 const cors = require('cors')
 
 app.use(cors({
-    origin: "*",
+    origin: "https://bsale-jhacoby-page.onrender.com",
 }))
 
 const mysql = require('mysql');
